@@ -1,0 +1,12 @@
+services:
+  linebot:
+    build: .
+    image: linebot:latest
+    container_name: linebot
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    environment:
+      - PORT=${PORT:-8080}
+    restart: unless-stopped

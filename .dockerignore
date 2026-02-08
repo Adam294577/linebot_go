@@ -1,0 +1,44 @@
+# Git
+.git
+.gitignore
+
+# 環境與機密（不要打包進映像）
+.env
+.env.*
+!.env.example
+env.example
+
+# 日誌與暫存
+*.log
+tmp/
+temp/
+
+# Air 本地設定
+.air.toml.local
+
+# Docker 建置相關（建置時不需要複製進 context）
+Dockerfile
+Dockerfile.dev
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# 文件（可選，減少映像層）
+README.md
+*.md
+
+# IDE / 編輯器
+.idea
+.vscode
+*.swp
+*.swo
+
+# 測試與建置產物
+*.test
+*.out
+coverage.html
+vendor/
+
+# 作業系統
+.DS_Store
+Thumbs.db

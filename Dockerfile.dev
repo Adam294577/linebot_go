@@ -1,0 +1,23 @@
+# 開發環境 Dockerfile（支援熱更新）
+FROM golang:1.25-alpine
+
+# Alpine 預設無 git，go mod download 需要
+RUN apk add --no-cache git
+
+WORKDIR /app
+
+# 先複製 go.mod 和 go.sum（如果存在），下載依賴（利用快取）
+COPY go.mod go.sum* ./
+RUN go mod tidy && go mod download
+
+# 安裝 air（Go 熱重載工具）- 使用新的模組路徑
+RUN go install github.com/air-verse/air@latest
+
+# 複製 air 配置檔（如果存在）
+COPY .air.toml* ./
+
+# 暴露端口
+EXPOSE 8080
+
+# 使用 air 運行（會監聽文件變化並自動重載）
+CMD ["air", "-c", ".air.toml"]

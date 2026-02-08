@@ -1,0 +1,4 @@
+.env
+tmp/
+*.log
+.air.toml.local

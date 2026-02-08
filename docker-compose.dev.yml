@@ -1,0 +1,22 @@
+services:
+  linebot:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: linebot-dev
+    ports:
+      - "8080:8080"
+    volumes:
+      # 掛載本地代碼到容器，實現熱更新
+      - .:/app
+      # 排除不需要同步的目錄
+      - /app/tmp
+      - /app/vendor
+    env_file:
+      - .env
+    environment:
+      - PORT=${PORT:-8080}
+    restart: unless-stopped
+    # 開發模式，保持容器運行
+    stdin_open: true
+    tty: true
