@@ -6,9 +6,9 @@ RUN apk add --no-cache git
 
 WORKDIR /app
 
-# 先複製 go.mod 和 go.sum（如果存在），下載依賴（利用快取）
-COPY go.mod go.sum* ./
-RUN go mod tidy && go mod download
+# 先複製 go.mod 和 go.sum，下載依賴（利用快取；改動依賴後重建會更新）
+COPY go.mod go.sum ./
+RUN go mod download
 
 # 複製其他源碼文件
 COPY . .
@@ -25,8 +25,8 @@ ENV TZ=Asia/Taipei
 WORKDIR /app
 COPY --from=builder /linebot .
 
-EXPOSE 8080
-ENV PORT=8080
+EXPOSE 8090
+ENV PORT=8090
 
 USER nobody
 ENTRYPOINT ["/app/linebot"]
