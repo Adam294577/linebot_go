@@ -1,5 +1,5 @@
 # 建置階段
-FROM golang:1.23-alpine AS builder
+FROM golang:1.25-alpine AS builder
 
 # Alpine 預設無 git，go mod download 需要
 RUN apk add --no-cache git
