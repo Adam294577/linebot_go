@@ -6,9 +6,11 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"project/controllers"
 	"project/cron"
 	"project/middlewares"
 	"project/routes"
+	linebotsvc "project/services/linebot"
 	"project/services/log"
 	response "project/services/responses"
 	"runtime"
@@ -82,6 +84,16 @@ func App(HttpServer *gin.Engine) {
 	if err := HttpServer.SetTrustedProxies(nil); err != nil {
 		fmt.Println("設定信任Proxy錯誤")
 		return
+	}
+
+	// 初始化 LINE Bot Service 與 Controller，並透過 middleware 注入到 context
+	lineService, err := linebotsvc.NewLineBotServiceFromEnv()
+	if err != nil {
+		log.Error("初始化 LINE Bot 服務失敗: %v", err)
+	} else {
+		lineController := controllers.NewLineController(lineService)
+		// 將 LineController 中介層掛上，讓 /line/webhook 能從 context 取得
+		HttpServer.Use(middlewares.LineControllerMiddleware(lineController))
 	}
 
 	// 啟動伺服器
