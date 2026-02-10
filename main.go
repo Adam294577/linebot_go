@@ -11,7 +11,6 @@ import (
 	"project/middlewares"
 	"project/routes"
 	"project/services/log"
-	"project/services/redis"
 	response "project/services/responses"
 	"runtime"
 	"strings"
@@ -19,6 +18,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"github.com/spf13/viper"
 )
 
@@ -36,6 +36,11 @@ import (
 var config string
 
 func init() {
+	// 先嘗試載入 .env（若不存在則忽略錯誤）
+	if err := godotenv.Load(); err != nil {
+		fmt.Println("godotenv.Load() skipped or .env not found:", err)
+	}
+
 	// 優先使用環境變數 ENV，如果沒有則檢查命令行參數
 	env := os.Getenv("ENV")
 	if env == "" {
@@ -85,14 +90,14 @@ func App(HttpServer *gin.Engine) {
 	numCPUs := runtime.NumCPU()
 	log.Info("CPU cores: %d", numCPUs)
 
-	// 初始化並檢查 Redis 連接（在啟動其他服務前）
-	redisClient := redis.NewRedisClient()
-	if redisClient.IsAvailable() {
-		fmt.Println("✓ Redis 緩存功能已啟用")
-	} else {
-		fmt.Println("⚠ Redis 緩存功能未啟用，將使用優雅降級模式（直接查詢資料庫）")
-	}
-	redisClient.Close() // 關閉測試連接，後續使用時會重新創建
+	// // 初始化並檢查 Redis 連接（在啟動其他服務前）
+	// redisClient := redis.NewRedisClient()
+	// if redisClient.IsAvailable() {
+	// 	fmt.Println("✓ Redis 緩存功能已啟用")
+	// } else {
+	// 	fmt.Println("⚠ Redis 緩存功能未啟用，將使用優雅降級模式（直接查詢資料庫）")
+	// }
+	// redisClient.Close() // 關閉測試連接，後續使用時會重新創建
 
 	// 啟動Gin服務
 	HttpServer = gin.Default()
