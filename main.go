@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"net/http"
 	"os"
@@ -33,45 +32,23 @@ import (
 // @description 請輸入 Bearer Token，格式為：Bearer <token>
 // @schemes http https
 
-var config string
-
+// init 在程式啟動時載入 .env 並初始化 viper，僅使用環境變數作為設定來源
 func init() {
 	// 先嘗試載入 .env（若不存在則忽略錯誤）
 	if err := godotenv.Load(); err != nil {
 		fmt.Println("godotenv.Load() skipped or .env not found:", err)
 	}
 
-	// 優先使用環境變數 ENV，如果沒有則檢查命令行參數
-	env := os.Getenv("ENV")
-	if env == "" {
-		args := os.Args
-		// 如果提供了命令行參數，使用參數指定的環境
-		if len(args) > 1 {
-			env = args[1]
-		} else {
-			// 如果都沒有設置，默認使用 prod（適合生產環境部署）
-			env = "prod"
-		}
-	}
-	configFile := fmt.Sprintf("config/config_%s.yaml", env)
-	flag.StringVar(&config, "c", configFile, "Configuration file path.")
-	flag.Parse()
-	// 初始化配置
+	// 初始化配置來源：只使用環境變數（包含 .env 載入後的值）
 	initConfig()
 }
 
-// initConfig 初始化配置
+// initConfig 初始化配置：不再強制依賴 YAML 檔，只透過環境變數（含 .env）取得設定
 func initConfig() {
-	viper.SetConfigFile(config)
 	// 設置環境變數替換規則：將配置路徑中的點號替換為下劃線
-	// 例如 Redis.Host 可以通過 REDIS_HOST 環境變數覆蓋
+	// 例如 Server.Website.Port 可以通過 SERVER_WEBSITE_PORT 環境變數覆蓋
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	viper.AutomaticEnv()
-	if err := viper.ReadInConfig(); err != nil {
-		// 獲取當前工作目錄以便調試
-		wd, _ := os.Getwd()
-		panic(fmt.Sprintf("無法讀取配置文件: %s\n當前工作目錄: %s\n錯誤: %v", config, wd, err))
-	}
 }
 
 var HttpServer *gin.Engine

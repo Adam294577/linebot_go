@@ -2,9 +2,10 @@
 .git
 .gitignore
 
-# 環境與機密（不要打包進映像）
-.env
-.env.*
+# 環境與機密
+# 提醒：.env 仍然不要 commit 到 Git，但為了讓 Docker build / 雲端掛載 .env 時可以被程式讀到，這裡不再從 build context 排除 .env
+!.env
+!.env.*
 !.env.example
 env.example
 
