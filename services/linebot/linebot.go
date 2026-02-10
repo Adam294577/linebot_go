@@ -4,9 +4,9 @@ import (
 	"errors"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/line/line-bot-sdk-go/v7/linebot"
+	"github.com/spf13/viper"
 )
 
 // LineBotService 封裝 LINE Bot 客戶端與事件處理邏輯
@@ -23,12 +23,13 @@ func NewLineBotService(channelSecret, channelToken string) (*LineBotService, err
 	return &LineBotService{bot: bot}, nil
 }
 
-// NewLineBotServiceFromEnv 從環境變數建立 LINE Bot 服務
+// NewLineBotServiceFromEnv 原本從環境變數建立 LINE Bot 服務
+// 目前已改為從設定檔（config_*.yaml）中的 Oauth.Line 讀取
 func NewLineBotServiceFromEnv() (*LineBotService, error) {
-	channelSecret := os.Getenv("LINE_CHANNEL_SECRET")
-	channelToken := os.Getenv("LINE_CHANNEL_ACCESS_TOKEN")
+	channelSecret := viper.GetString("Oauth.Line.ChannelSecret")
+	channelToken := viper.GetString("Oauth.Line.ChannelAccessToken")
 	if channelSecret == "" || channelToken == "" {
-		return nil, errors.New("LINE_CHANNEL_SECRET 與 LINE_CHANNEL_ACCESS_TOKEN 必須設定")
+		return nil, errors.New("Oauth.Line.ChannelSecret 與 Oauth.Line.ChannelAccessToken 必須在設定檔中設定")
 	}
 	return NewLineBotService(channelSecret, channelToken)
 }

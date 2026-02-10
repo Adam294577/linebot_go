@@ -1,8 +1,9 @@
-package controller
+package controllers
 
 import (
+	response "project/services/responses"
+
 	"github.com/gin-gonic/gin"
-	"linebot/service/responses"
 )
 
 // Health 健康檢查

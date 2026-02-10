@@ -4,3 +4,7 @@ tmp/
 .air.toml.local
 
 config
+# cursor
+.cursor
+.specify
+specs

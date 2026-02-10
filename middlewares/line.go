@@ -1,8 +1,9 @@
-package middleware
+package middlewares
 
 import (
+	"project/controllers"
+
 	"github.com/gin-gonic/gin"
-	"linebot/controller"
 )
 
 type contextKey string
@@ -10,7 +11,7 @@ type contextKey string
 const lineControllerKey contextKey = "line_controller"
 
 // LineControllerMiddleware 將 LineController 注入 context，供後續 handler 使用
-func LineControllerMiddleware(lc *controller.LineController) gin.HandlerFunc {
+func LineControllerMiddleware(lc *controllers.LineController) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Set(string(lineControllerKey), lc)
 		c.Next()
@@ -18,12 +19,12 @@ func LineControllerMiddleware(lc *controller.LineController) gin.HandlerFunc {
 }
 
 // GetLineController 從 context 取得 LineController（由 LineControllerMiddleware 注入）
-func GetLineController(c *gin.Context) *controller.LineController {
+func GetLineController(c *gin.Context) *controllers.LineController {
 	v, ok := c.Get(string(lineControllerKey))
 	if !ok || v == nil {
 		return nil
 	}
-	return v.(*controller.LineController)
+	return v.(*controllers.LineController)
 }
 
 // WebhookFromContext 從 context 取得 LineController 並處理 Webhook（給 route 無參數註冊用）

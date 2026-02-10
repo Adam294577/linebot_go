@@ -1,12 +1,13 @@
-package controller
+package controllers
 
 import (
 	"log"
+	response "project/services/responses"
+
+	linebotsvc "project/services/linebot"
 
 	"github.com/gin-gonic/gin"
 	"github.com/line/line-bot-sdk-go/v7/linebot"
-	linebotsvc "linebot/service/linebot"
-	"linebot/service/responses"
 )
 
 // LineController 處理 LINE Webhook 的 API 層（只負責 route 請求/回應）

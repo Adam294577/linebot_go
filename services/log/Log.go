@@ -2,9 +2,9 @@ package log
 
 import (
 	"fmt"
-	"linebot/service/common"
 	"log"
 	"os"
+	"project/services/common"
 	"runtime"
 	"strings"
 	"time"
