@@ -87,6 +87,7 @@ func App(HttpServer *gin.Engine) {
 	}
 
 	// 初始化 LINE Bot Service 與 Controller，並透過 middleware 注入到 context
+	// LineBotService 使用 project/services/imageai 進行圖片食物辨識（resize、openai、context）
 	lineService, err := linebotsvc.NewLineBotServiceFromEnv()
 	if err != nil {
 		log.Error("初始化 LINE Bot 服務失敗: %v", err)

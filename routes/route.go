@@ -7,16 +7,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// Setup 註冊所有路由（LINE Webhook 依賴 middleware 注入 LineController）
+// Setup 註冊所有路由（/s3/getImage 觸發時才從環境變數判斷是否可用）
 func Setup(r *gin.Engine) {
-	// 健康檢查
 	r.GET("/", controllers.Health)
-
-	// DB 健康檢查
-	// r.GET("/db", controllers.HealthDB)
+	r.POST("/s3/getImage", controllers.S3GetImageHandler)
 
 	// LINE Webhook（LineController 由 middleware.LineControllerMiddleware 注入）
-	// dev: https://9211-118-150-196-246.ngrok-free.app/line/webhook
+	// dev: https://f16e-118-232-75-172.ngrok-free.app/line/webhook
 	// prod: https://my-go-line-bot.zeabur.app/line/webhook
 	r.POST("/line/webhook", middlewares.WebhookFromContext)
 }
